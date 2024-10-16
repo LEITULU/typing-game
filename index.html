@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Typing game:1</title>
+    <link rel="stylesheet" href="./destyle.css">
+    <link rel="stylesheet" href="">
+    <style>
+        .text-container {
+            width: 100vw; height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .text-container label {
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .question {
+            display: flex;
+            font-size: 4vw;
+            font-weight: bold;
+            letter-spacing: 0.25em;
+            text-align: center;
+        }
+        .text {
+            width: 100%;
+            margin-top: 2rem;
+            font-size: 2vw;
+            letter-spacing: 0.1rem;
+            text-align: center;
+            /* border: solid 0.5px black; */
+            /* border-radius: 5px; */
+        }
+        .text:focus, text:focus-visible {
+            border: none;
+            outline: none;
+        }
+        .marker {
+            background-color: #91dbf1;
+        }
+
+        .message {
+            display: block;
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        .button {
+            margin-top: 1rem;
+            font-size: 1rem;
+            padding: 5px;
+            cursor: pointer;
+            background-color: #72797b3b;
+            border: solid 0.5px;
+            border-radius: 1rem;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div id="game" class="text-container">
+        <label for="inputText">
+            <div class="question">
+                <span id="entered" class="marker"></span>
+                <span id="remained"></span>
+            </div>
+            <input type="text" class="text" id="inputText" autofocus>
+        </label>
+    </div> 
+
+    <div id="message" class="text-container hidden">
+        <div class="message">
+            ゲームクリア！ <br>
+            <button id="replayBtn" class="button">もう一度プレイする</button>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+
+        const questions = [
+            'JavaScript',
+            'docment',
+            'window',
+            'getelementById',
+            'getelementByClassName',
+            'addEventlistener'
+        ];
+
+        const entered = document.getElementById('entered');
+        const remained = document.getElementById('remained');
+        const inputText = document.getElementById('inputText');
+        const game = document.getElementById('game');
+        const message = document.getElementById('message');
+        const replayBtn = document.getElementById('replayBtn');
+
+        let remainedTextWords = remained.textContent.split('');
+        // console.log(remainedTextWords);
+        let enterdTextWords = [];
+        let currentKey;
+        let currentText;
+
+        const setQuestion = () => {
+            currentKey = Math.floor( Math.random() * questions.length );
+            currentText = questions[ currentKey ];
+
+            questions.splice( currentKey , 1);
+            console.log("==========questios==========");
+            console.log( questions );
+            console.log("==========questios==========");
+
+            entered.textContent = '' ;
+            remained.textContent = currentText;
+            inputText.value = '';
+
+            remainedTextWords = remained.textContent.split('');
+            enterdTextWords = [];
+        };
+        setQuestion();
+
+        document.addEventListener('input', (e) => {
+            //フォームに値が入力された時
+            // console.log(e.data);
+            if (remainedTextWords[0] === e.data) {
+                // console.log('正解');
+                enterdTextWords.push( remainedTextWords[0] );   // 文字を配列の最後に１文字追加
+                remainedTextWords.shift();                      // 未入力文字の配列を１文字削除
+
+                console.log('=====================================');
+                console.log('入力済み' + enterdTextWords);
+                console.log('未入力' + remainedTextWords);
+                console.log('=====================================');
+
+                entered.textContent = enterdTextWords.join('');
+                remained.textContent = remainedTextWords.join('');
+
+                //全ても文字を入力した時に実行
+                if (remainedTextWords.length <=0 ) {
+                    if (questions.length <= 0) {
+                        game.classList.add('hidden');
+                        message.classList.remove('hidden');
+                    } else {
+                        console.log('クリア!全ての文字が入力されました');
+                        setQuestion();
+                    }
+                }
+            } else {
+                // console.log('不正解');
+            }
+        });
+
+        replayBtn.addEventListener('click', () =>{
+            window.location.reload();
+        });
+    </script>
+
+
+</body>
+</html>
